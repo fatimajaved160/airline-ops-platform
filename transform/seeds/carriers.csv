@@ -1,0 +1,16 @@
+carrier_code,carrier_name,icao_code,carrier_type
+9E,Endeavor Air,EDV,Regional
+AA,American Airlines,AAL,Mainline
+AS,Alaska Airlines,ASA,Mainline
+B6,JetBlue Airways,JBU,Mainline
+DL,Delta Air Lines,DAL,Mainline
+F9,Frontier Airlines,FFT,Low cost
+G4,Allegiant Air,AAY,Low cost
+HA,Hawaiian Airlines,HAL,Mainline
+MQ,Envoy Air,ENY,Regional
+NK,Spirit Airlines,NKS,Low cost
+OH,PSA Airlines,JIA,Regional
+OO,SkyWest Airlines,SKW,Regional
+UA,United Airlines,UAL,Mainline
+WN,Southwest Airlines,SWA,Low cost
+YX,Republic Airways,RPA,Regional

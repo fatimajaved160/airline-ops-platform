@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: dim_airports
+    description: One row per airport with an IATA code
+    columns:
+      - name: iata_code
+        tests: [unique, not_null]
+
+  - name: dim_airlines
+    description: One row per version of each airline (SCD Type 2)
+    columns:
+      - name: airline_key
+        tests: [unique, not_null]
+
+  - name: fct_flights
+    description: One row per flight, linked to airports and the airline version valid on the day
+    columns:
+      - name: flight_id
+        tests: [unique, not_null]
+      - name: airline_key
+        description: Null would mean a carrier is missing from seeds/carriers.csv
+        tests: [not_null]
+      - name: origin_airport
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_airports')
+                field: iata_code
+              config:
+                severity: warn
+      - name: dest_airport
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_airports')
+                field: iata_code
+              config:
+                severity: warn

@@ -1,0 +1,7 @@
+airline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/warehouse/airline.duckdb
+      threads: 4

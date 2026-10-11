@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_flights
+    description: One cleaned, typed row per scheduled flight
+    columns:
+      - name: flight_id
+        description: Hash of the business key (date, carrier, flight number, route, scheduled time)
+        tests: [unique, not_null]
+      - name: flight_date
+        tests: [not_null]
+      - name: carrier_code
+        tests: [not_null]
+      - name: origin_airport
+        tests: [not_null]
+      - name: dest_airport
+        tests: [not_null]
+      - name: cancellation_code
+        description: A carrier, B weather, C air traffic system, D security
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['A', 'B', 'C', 'D']

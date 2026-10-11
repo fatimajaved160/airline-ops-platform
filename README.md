@@ -2,7 +2,7 @@
 
 An end-to-end data platform for airline on-time performance: ingestion from files and APIs, a layered warehouse with history tracking, data quality monitoring, a delay prediction model, and a secure REST API.
 
-> Status: in progress. Day 1 (ingestion and bronze layer) complete.
+> Status: in progress. Ingestion, bronze, silver and gold layers complete.
 
 ## Architecture
 
@@ -32,6 +32,20 @@ OpenSky API        ──┘     meta     load log, quality results
 - **Transactional loads**: each file loads inside a transaction, so a failure rolls back cleanly and is logged with its error.
 - **Bronze keeps the source as delivered**: every column loaded as text, plus `_source_file`, `_file_hash`, `_loaded_at` for lineage.
 
+## Warehouse layers
+
+| Layer | Tables | Purpose |
+|---|---|---|
+| bronze | `flights`, `airports`, `airlines` | Raw files as delivered, all text, plus audit columns |
+| silver | `stg_flights` | Typed, renamed, deduplicated on the business key |
+| gold | `dim_airports`, `dim_airlines`, `fct_flights` | Star schema for analysis, API and modelling |
+
+Key design decisions:
+- **Airports**: only airports with an IATA code are kept, since flights can only join on that code (about 9,000 of 86,000).
+- **Airlines**: the OpenFlights reference file was out of date (e.g. `9E` listed as Pinnacle Airlines, renamed Endeavor Air in 2013), so carriers are maintained as a dbt seed and tracked with an **SCD Type 2 snapshot**. A renamed airline gets a new version; the old one is closed, not overwritten.
+- **Point-in-time join**: each flight links to the airline version valid on the flight date.
+- **Data quality tests**: uniqueness and nulls on keys, accepted cancellation codes, arrival delay only missing for cancelled or diverted flights, exactly one current version per airline, and every flight airport present in `dim_airports`.
+
 ## Run it
 
 ```bash
@@ -40,6 +54,9 @@ pip install -r requirements.txt
 
 python -m ingestion.load_bronze --year 2024 --months 1 2 3
 python -m ingestion.profile_bronze
+
+cd transform
+dbt build --profiles-dir .
 ```
 
 Logs are written to `logs/ingestion.log`; the warehouse to `data/warehouse/airline.duckdb`.
@@ -47,7 +64,7 @@ Logs are written to `logs/ingestion.log`; the warehouse to `data/warehouse/airli
 ## Roadmap
 
 - [x] Ingestion with retries, logging and safe re-runs; bronze layer
-- [ ] dbt silver and gold models, business keys, SCD Type 2 dimensions
+- [x] dbt silver and gold models, business keys, SCD Type 2 dimensions
 - [ ] Data quality tests, source reconciliation and alerting
 - [ ] Prefect scheduling; pytest suite
 - [ ] ASP.NET Core REST API with JWT auth, logging and xUnit tests

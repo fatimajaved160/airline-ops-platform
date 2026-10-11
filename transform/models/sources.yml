@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: Raw data exactly as delivered, loaded by ingestion/load_bronze.py
+    tables:
+      - name: flights
+      - name: airports
+      - name: airlines

@@ -1,0 +1,12 @@
+snapshots:
+  - name: carriers_snapshot
+    relation: ref('carriers')
+    description: >
+      SCD Type 2 history of carriers. Each time `dbt build` runs, dbt compares the seed with the
+      latest stored version. If anything changed, the old row is closed (dbt_valid_to is set)
+      and a new current row is added. Nothing is ever overwritten.
+    config:
+      schema: snapshots
+      unique_key: carrier_code
+      strategy: check
+      check_cols: [carrier_name, icao_code, carrier_type]

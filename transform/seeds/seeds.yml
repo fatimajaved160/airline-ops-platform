@@ -1,0 +1,11 @@
+version: 2
+
+seeds:
+  - name: carriers
+    description: >
+      Maintained list of the carriers that report to BTS. We keep this ourselves because the
+      OpenFlights airline file is out of date (e.g. 9E listed as Pinnacle Airlines, renamed
+      Endeavor Air in 2013). Edit this file when a carrier changes; the snapshot records history.
+    columns:
+      - name: carrier_code
+        tests: [unique, not_null]

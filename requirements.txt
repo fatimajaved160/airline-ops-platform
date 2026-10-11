@@ -1,2 +1,3 @@
 duckdb>=1.1
 requests>=2.31
+dbt-duckdb>=1.9
