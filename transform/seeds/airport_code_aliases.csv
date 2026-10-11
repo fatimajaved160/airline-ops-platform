@@ -1,0 +1,2 @@
+flight_code,icao_code,reason
+PBI,KPBI,"Flight data (BTS 2024) uses PBI; airports file now lists this airport as DJT"

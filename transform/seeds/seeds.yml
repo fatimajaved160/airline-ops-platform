@@ -9,3 +9,18 @@ seeds:
     columns:
       - name: carrier_code
         tests: [unique, not_null]
+
+  - name: airport_code_aliases
+    description: >
+      Known airport code changes. Maps a 3-letter code used in the flight data to the airport's
+      stable 4-letter ICAO code, for cases where the airports file now uses a different code.
+    columns:
+      - name: flight_code
+        tests: [unique, not_null]
+      - name: icao_code
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_airports')
+                field: icao_code

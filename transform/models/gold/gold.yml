@@ -6,6 +6,9 @@ models:
     columns:
       - name: iata_code
         tests: [unique, not_null]
+      - name: icao_code
+        description: Stable 4-letter code; flights are linked to airports through this
+        tests: [unique, not_null]
 
   - name: dim_airlines
     description: One row per version of each airline (SCD Type 2)
@@ -21,19 +24,19 @@ models:
       - name: airline_key
         description: Null would mean a carrier is missing from seeds/carriers.csv
         tests: [not_null]
-      - name: origin_airport
+      - name: origin_icao
+        description: Null means the origin code matched no airport; add a row to seeds/airport_code_aliases.csv
         tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('dim_airports')
-                field: iata_code
-              config:
-                severity: warn
-      - name: dest_airport
+                field: icao_code
+      - name: dest_icao
+        description: Null means the destination code matched no airport; add a row to seeds/airport_code_aliases.csv
         tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('dim_airports')
-                field: iata_code
-              config:
-                severity: warn
+                field: icao_code
